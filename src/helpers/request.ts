@@ -12,7 +12,7 @@ export enum ResponseCode {
   SERVER_ERROR = 500
 }
 
-type ResponseObjectData = Record<string, unknown>
+export type ResponseObjectData = Record<string, unknown>
 
 type ResponseData<T = ResponseObjectData[] | ResponseObjectData | null> = T
 
@@ -45,4 +45,43 @@ export const http = {
     message,
     errors: []
   })
+}
+
+export const error = {
+  contentTypeIsInvalid: {
+    data: null,
+    message: '',
+    errors: ['Content-Type es inválido'],
+    code: ResponseCode.BAD_REQUEST
+  },
+  authorizationHeaderDoesntExist: {
+    data: null,
+    message: '',
+    errors: ['No autorizado. El token es requerido'],
+    code: ResponseCode.NOT_AUTHORIZED
+  },
+  forbidden: {
+    data: null,
+    message: '',
+    errors: ['Acceso denegado. El token no tiene permisos para esta acción'],
+    code: ResponseCode.PERMISSION_DENIED
+  },
+  invalidToken: (message: string): Response<null> => ({
+    data: null,
+    message: '',
+    errors: ['No autorizado. El token no es válido', message],
+    code: ResponseCode.NOT_AUTHORIZED
+  }),
+  invalidBodyToken: {
+    data: null,
+    message: null,
+    errors: ['No autorizado. La estructura del token recibido es inválida'],
+    code: ResponseCode.NOT_AUTHORIZED
+  },
+  expiredToken: {
+    data: null,
+    message: '',
+    errors: ['No autorizado. El token ya expiró'],
+    code: ResponseCode.NOT_AUTHORIZED
+  }
 }
