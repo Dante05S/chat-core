@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize'
+import { Sequelize } from 'sequelize-typescript'
 import { type Dialect } from 'sequelize/types/sequelize'
 
 const sequelize = new Sequelize(
