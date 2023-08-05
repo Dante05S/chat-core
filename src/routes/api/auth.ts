@@ -1,10 +1,11 @@
 import { Router } from 'express'
-import { register, login } from '../../controllers/auth'
+import { register, login, requestCode } from '../../controllers/auth'
 import { contentType } from '../../middlewares/content_type'
 import { validateBody } from '../../middlewares/validateBody'
 import {
   validateRegisterSchema,
-  validateLoginSchema
+  validateLoginSchema,
+  validateRequestCodeSchema
 } from '../../validators/auth_validator'
 
 const router = Router()
@@ -16,5 +17,11 @@ router.post(
   register
 )
 router.post('/login', contentType, validateBody(validateLoginSchema()), login)
+router.post(
+  '/request-code',
+  contentType,
+  validateBody(validateRequestCodeSchema()),
+  requestCode
+)
 
 export default router

@@ -48,6 +48,12 @@ export class PermissionDeniedError extends CustomError {
   }
 }
 
+export class NotAuthorizedError extends CustomError {
+  constructor(message: string, data: ResponseObjectData | null = null) {
+    super(message, 'NOT_AUTHORIZED', ResponseCode.NOT_AUTHORIZED, data)
+  }
+}
+
 export const getStatusByException = (e: unknown): ResponseCode => {
   if (e instanceof CustomError) {
     return e.status

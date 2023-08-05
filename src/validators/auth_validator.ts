@@ -33,3 +33,10 @@ export const validateLoginSchema = (): Joi.ObjectSchema => {
     email: Joi.string().email().required()
   })
 }
+
+export const validateRequestCodeSchema = (): Joi.ObjectSchema => {
+  return Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+  })
+}

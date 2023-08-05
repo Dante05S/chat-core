@@ -3,6 +3,7 @@ import type User from '../database/models/user'
 import { type IUser, type UserCreation } from '../database/models/user'
 import {
   BadRequestError,
+  NotAuthorizedError,
   PermissionDeniedError,
   ServerError
 } from '../helpers/exceptions_errors'
@@ -14,6 +15,8 @@ import { type Login } from '../interfaces/login'
 import cache from '../utils/cache'
 import { createToken } from '../helpers/tokenize'
 import { type UserQuery } from '../types/user_query'
+import { type RequestCode } from '../types/request_code'
+import bcrypt from 'bcrypt'
 
 class AuthService extends Service<IUser, UserCreation, User, UserRepository> {
   constructor() {
@@ -62,11 +65,25 @@ class AuthService extends Service<IUser, UserCreation, User, UserRepository> {
     const user = await this.repository.getUserByEmail(email)
     const token = createToken(user.id)
     cache.delete(keyCache)
-
     return {
-      user,
+      user: {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email
+      },
       token
     }
+  }
+
+  public async requestCode(data: RequestCode): Promise<null> {
+    const user = await this.repository.getUserByEmail(data.email.toLowerCase())
+    if (!bcrypt.compareSync(data.password, user.password)) {
+      throw new NotAuthorizedError('La contraseña es incorrecta')
+    }
+
+    await this.generateVerifyCode(user.email, user.first_name)
+    return null
   }
 }
 
